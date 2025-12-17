@@ -1,6 +1,7 @@
 <h1>kali-ephemeral-setup</h1>
-Installs additional tools for Kali Linux. Used to quickly upgrade ephemeral instances of Kali for pentesting. Development aimed at Offsec Kali Desktop for Proving Grounds.  Based on IppSec's parrot-build repo and tutorial (https://github.com/IppSec/parrot-build)
+Installs additional tools for Kali Linux. Used to quickly upgrade ephemeral instances of Kali for pentesting. Development aimed at Offsec Kali Desktop for Proving Grounds.  Based on IppSec's parrot-build repo and tutorial (https://github.com/IppSec/parrot-build).
 
+<h2>Usage</h2>
 
 On the ephemeral Kali instance, install ansible:
 ```
@@ -9,8 +10,7 @@ sudo apt install ansible
 
 Download the playbook and enter the directory:
 ```
-git clone https://github.com/netdemux/kali-ephemeral-setup
-cd kali-ephermeral-build
+git clone https://github.com/netdemux/kali-ephemeral-setup && cd kali-ephermeral-build
 ```
 
 Install third party requirements:
