@@ -1,7 +1,7 @@
 <h1>kali-ephemeral-setup</h1>
 
 <h2>Usage</h2>
-Installs additional tools for Kali Linux. Used to quickly upgrade ephemeral instances of Kali for pentesting. Development aimed at Offsec Kali Desktop for Proving Grounds.  Based on IppSec's parrot-build repo and tutorial (https://github.com/IppSec/parrot-build).
+Installs additional tools for Kali Linux. Used to quickly upgrade ephemeral instances of Kali for pentesting. Development aimed at Offsec Kali Desktop for Proving Grounds.  Based on IppSec's parrot-build repo and tutorial. Refer to: https://github.com/IppSec/parrot-build
 
 <h2>Playbook Execution</h2>
 
