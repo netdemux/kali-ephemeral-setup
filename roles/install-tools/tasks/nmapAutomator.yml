@@ -1,0 +1,21 @@
+---
+- name: "Clone nmapAutomator"
+  git:
+    repo: "https://github.com/21y4d/nmapAutomator"
+    dest: "/opt/nmapAutomator"
+  become: true
+  become_method: sudo
+- name: "Install nmapAutomator Dependencies"
+  apt:
+    name:
+      - ffuf
+      - gobuster
+    state: present
+    update_cache: yes
+  become: true
+  become_method: sudo
+- name: "Create Symbolic Link to nmapAutomator.sh in bin"
+  shell: ln -sf /opt/nmapAutomator/nmapAutomator.sh /usr/local/bin/
+  become: true
+  become_method: sudo
+
