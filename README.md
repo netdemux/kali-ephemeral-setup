@@ -12,7 +12,7 @@ sudo apt install ansible
 
 Download the repository and enter the new directory:
 ```
-git clone https://github.com/netdemux/kali-ephemeral-setup && cd kali-ephermeral-build
+git clone https://github.com/netdemux/kali-ephemeral-setup && cd kali-ephermeral-setup
 ```
 
 Install third party requirements:
