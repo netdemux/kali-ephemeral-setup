@@ -1,6 +1,52 @@
 ---
-- name: "Copy zsh Configuration File"
-  copy:
-    src: "{{ role_path }}/files/.zshrc"
-    dest: "{{ ansible_env.HOME }}/"
+- block:
+  - name: "Download ohmyzsh"
+    get_url:
+      url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+      dest: "{{ ansible_env.HOME }}/install.sh"
+      mode: '0755'
+  - name: "Check for Previous ohmyzsh Installation"
+    stat:
+      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    register: zsh_directory
+  - name: "Install ohmyzsh"
+    shell: "{{ ansible_env.HOME }}/install.sh"
+    when: not zsh_directory.stat.exists
+
+  - name: "Install PowerLevel10K"
+    git:
+      repo: "https://github.com/romkatv/powerlevel10k.git"
+      dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
+      depth: 1
+
+  - name: "Download Fonts"
+    get_url:
+      url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.zip"
+      dest: "{{ ansible_env.HOME }}/Meslo.zip"
+  - name: "Create Temp Directory for Fonts"
+    file:
+      path: "{{ ansible_env.HOME }}/Meslo"
+      state: directory
+      mode: '0755'
+  - name: "Install Font Files"
+    unarchive:
+      src: "{{ ansible_env.HOME }}/Meslo.zip"
+      dest: "{{ ansible_env.HOME }}/Meslo"
+  - name: "Move Font Files to Fonts Directory"
+    copy:
+      src: "{{ ansible_env.HOME }}/Meslo/"
+      dest: /usr/share/fonts/Meslo/
+      force: no
+    become: true
+    become_method: sudo
+
+  - name: "Copy Powerlevel10K Configuration File"
+    copy:
+      src: "{{ role_path }}/files/.p10k.zsh"
+      dest: "{{ ansible_env.HOME }}/.p10k.zsh"
+
+  - name: "Copy Z-Shell Configuration File"
+    copy:
+      src: "{{ role_path }}/files/.zshrc"
+      dest: "{{ ansible_env.HOME }}/"
 
