@@ -53,11 +53,16 @@
     shell: "rm {{ ansible_env.HOME }}/{{ var_font }}.zip && rm -rf {{ ansible_env.HOME }}/{{ var_font }}/"
     when: not font_directory.stat.exists
 
-  - name: "Edit QTerminal configuration file"
+  - name: "Edit QTerminal configuration file: font family"
     lineinfile:
       path: "{{ ansible_env.HOME }}/.config/qterminal.org/qterminal.ini"
       regexp: '^fontFamily.*'
       line: "fontFamily={{ var_font_family }}"
+  - name: "Edit QTerminal configuration file: color scheme"
+    lineinfile:
+      path: "{{ ansible_env.HOME }}/.config/qterminal.org/qterminal.ini"
+      regexp: '^colorScheme.*'
+      line: "colorScheme={{ var_color_scheme }}"
 
   - name: "Copy Powerlevel10K configuration file"
     copy:
@@ -72,3 +77,4 @@
   vars:
     var_font: "CascadiaCode"
     var_font_family: "CaskaydiaCove Nerd Font Mono"
+    var_color_scheme: "DarkPastels"
