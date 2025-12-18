@@ -1,5 +1,5 @@
 ---
-- name: "Kali Ephemeral Setup"
+- name: "KALI EPHEMERAL SETUP"
   hosts: localhost
   connection: local
   roles:

@@ -5,14 +5,14 @@
     git:
       repo: "https://github.com/21y4d/nmapAutomator"
       dest: "/opt/nmapAutomator"
-  - name: "Install nmapAutomator Dependencies"
+  - name: "Install nmapAutomator dependencies"
     apt:
       name:
         - ffuf
         - gobuster
       state: present
       update_cache: yes
-  - name: "Create Symbolic Link to nmapAutomator.sh in bin"
+  - name: "Create symbolic link to nmapAutomator.sh in /usr/local/bin"
     shell: ln -sf /opt/nmapAutomator/nmapAutomator.sh /usr/local/bin/
   
   become: true
