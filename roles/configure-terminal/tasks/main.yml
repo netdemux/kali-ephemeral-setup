@@ -21,28 +21,28 @@
       dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
       depth: 1
 
-  - name: "Download fonts"
+  - name: "Download font: {{ var_font }}"
     get_url:
-      url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/Meslo.zip"
-      dest: "{{ ansible_env.HOME }}/Meslo.zip"
-  - name: "Create temp directory for fonts"
+      url: "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/{{ var_font }}.zip"
+      dest: "{{ ansible_env.HOME }}/{{ var_font }}.zip"
+  - name: "Create temp directory for font"
     file:
-      path: "{{ ansible_env.HOME }}/Meslo"
+      path: "{{ ansible_env.HOME }}/{{ var_font }}"
       state: directory
       mode: '0755'
   - name: "Install font files"
     unarchive:
-      src: "{{ ansible_env.HOME }}/Meslo.zip"
-      dest: "{{ ansible_env.HOME }}/Meslo"
-  - name: "Move font files to fonts directory"
+      src: "{{ ansible_env.HOME }}/{{ var_font }}.zip"
+      dest: "{{ ansible_env.HOME }}/{{ var_font }}"
+  - name: "Move font files to /usr/share/fonts/ directory"
     copy:
-      src: "{{ ansible_env.HOME }}/Meslo/"
-      dest: /usr/share/fonts/Meslo/
+      src: "{{ ansible_env.HOME }}/{{ var_font }}/"
+      dest: "/usr/share/fonts/{{ var_font }}/"
       force: no
     become: true
     become_method: sudo
   - name: "Clean up font installation files"
-    shell: "rm {{ ansible_env.HOME }}/Meslo.zip && rm -rf {{ ansible_env.HOME }}/Meslo/"
+    shell: "rm {{ ansible_env.HOME }}/{{ var_font }}.zip && rm -rf {{ ansible_env.HOME }}/{{ var_font }}/"
 
   - name: "Copy Powerlevel10K configuration file"
     copy:
@@ -54,3 +54,5 @@
       src: "{{ role_path }}/files/.zshrc"
       dest: "{{ ansible_env.HOME }}/"
 
+  vars:
+    var_font: "CascadiaMono"
