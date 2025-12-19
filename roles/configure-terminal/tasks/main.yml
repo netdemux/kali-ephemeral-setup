@@ -1,21 +1,24 @@
 ---
 - block:
+  ##Oh My Zsh##
+  - name: "Check for previous ohmyzsh installation"
+    stat:
+      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
+    register: zsh_directory
   - name: "Download ohmyzsh"
     get_url:
       url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
       dest: "{{ ansible_env.HOME }}/install.sh"
       mode: '0755'
-  - name: "Check for previous ohmyzsh installation"
-    stat:
-      path: "{{ ansible_env.HOME }}/.oh-my-zsh"
-    register: zsh_directory
+    when: not zsh_directory.stat.exists
   - name: "Install ohmyzsh"
     shell: "{{ ansible_env.HOME }}/install.sh"
     when: not zsh_directory.stat.exists
   - name: "Clean up ohmyzsh installer"
     shell: "rm {{ ansible_env.HOME }}/install.sh"
+    when: not zsh_directory.stat.exists
 
-  - name: "Download Powerlevel10K"
+  - name: "Download Powerlevel10K theme for zsh"
     git:
       repo: "https://github.com/romkatv/powerlevel10k.git"
       dest: "{{ ansible_env.HOME }}/.oh-my-zsh/custom/themes/powerlevel10k"
@@ -53,6 +56,18 @@
     shell: "rm {{ ansible_env.HOME }}/{{ var_font }}.zip && rm -rf {{ ansible_env.HOME }}/{{ var_font }}/"
     when: not font_directory.stat.exists
 
+  - name: "Check whether color scheme is already installed"
+    stat:
+      path: "/usr/share/qtermwidget6/color-schemes/{{ var_color_scheme }}.colorscheme"
+    register: color_file
+  - name: "Download Rose Pine color scheme for QTerminal"
+    get_url:
+      url: "http://github.com/rose-pine/qterminal/blob/main/dist/{{ var_color_scheme }}.colorscheme"
+      dest: "/usr/share/qtermwidget6/color-schemes/{{ var_color_scheme }}.colorscheme"
+    when: not color_file.stat.exists
+    become: true
+    become_method: sudo
+
   - name: "Edit QTerminal configuration file: font family"
     lineinfile:
       path: "{{ ansible_env.HOME }}/.config/qterminal.org/qterminal.ini"
@@ -73,6 +88,9 @@
     copy:
       src: "{{ role_path }}/files/.zshrc"
       dest: "{{ ansible_env.HOME }}/"
+
+#  - name: "Download neovim"
+    # Future configuration to go here
 
   vars:
     var_font: "CascadiaCode"
