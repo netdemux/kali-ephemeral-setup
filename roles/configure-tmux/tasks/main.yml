@@ -9,3 +9,10 @@
   copy:
     src: "{{ playbook_dir }}/roles/configure-tmux/files/.tmux.conf"
     dest: "{{ ansible_env.HOME }}/"
+- name: "Install tmux plugins"
+  git:
+    repo: https://github.com/tmux-plugins/tpm
+    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    clone: yes
+    update: yes
+
