@@ -4,7 +4,6 @@
     name:
       - jq
       - pipx
-      - exiftool
       - curl
       - seclists
     state: latest
