@@ -1,0 +1,13 @@
+---
+- name: "Install packages"
+  package:
+    name:
+      - jq
+      - pipx
+      - exiftool
+      - curl
+      - seclists
+    state: latest
+  become: true
+  become_method: sudo
+

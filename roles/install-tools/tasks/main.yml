@@ -1,3 +1,4 @@
 ---
+- include_tasks: apt-tools.yml
 - include_tasks: nmapAutomator.yml
 
