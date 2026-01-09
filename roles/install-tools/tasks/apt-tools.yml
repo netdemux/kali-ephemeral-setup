@@ -6,6 +6,7 @@
       - pipx
       - curl
       - seclists
+      - rlwrap
     state: latest
   become: true
   become_method: sudo
