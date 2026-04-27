@@ -8,11 +8,11 @@
 - name: "Copy tmux configuration file"
   copy:
     src: "{{ playbook_dir }}/roles/configure-tmux/files/.tmux.conf"
-    dest: "{{ ansible_env.HOME }}/"
+    dest: "{{ ansible_facts['env']['HOME'] }}/"
 - name: "Install tmux plugins"
   git:
     repo: https://github.com/tmux-plugins/tpm
-    dest: "{{ ansible_env.HOME }}/.tmux/plugins/tpm"
+    dest: "{{ ansible_facts['env']['HOME'] }}/.tmux/plugins/tpm"
     clone: yes
     update: yes
 
