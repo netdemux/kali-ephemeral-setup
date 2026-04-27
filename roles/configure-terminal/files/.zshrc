@@ -266,7 +266,7 @@ fi
 
 # Created by `pipx` on 2025-07-16 15:00:26
 export PATH="$PATH:/home/husdpen/.local/bin"
-source /home/husdpen/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme
+source "$HOME/.oh-my-zsh/custom/themes/powerlevel10k/powerlevel10k.zsh-theme"
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
