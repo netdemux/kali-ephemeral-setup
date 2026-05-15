@@ -7,7 +7,7 @@
       - curl
       - seclists
       - rlwrap
-      - ligolo
+      - ligolo-ng
     state: latest
   become: true
   become_method: sudo
