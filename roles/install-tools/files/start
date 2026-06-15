@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+    echo "Please include a project name."
+    echo "Usage: start <project_name>"
+    exit 1
+fi
+
+PROJECT_NAME="$1"
+
+if [ ! -d "$PROJECT_NAME" ]; then
+    mkdir "$PROJECT_NAME"
+else
+    echo "Directory '$PROJECT_NAME' already exists. Exiting without changes."
+    exit 1
+fi
+
+touch "$PROJECT_NAME/users.txt"
+touch "$PROJECT_NAME/passwords.txt"
+touch "$PROJECT_NAME/creds.txt"
+
+tmux new-session -s "$PROJECT_NAME" -c "$(pwd)/$PROJECT_NAME"
