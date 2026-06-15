@@ -1,0 +1,11 @@
+---
+- name: "Install scripts"
+  copy:
+    src: "{{ role_path }}/files/start"
+    dest: "/usr/local/bin/start"
+    owner: root
+    group: root
+    mode: '0755'
+  become: true
+  become_method: sudo
+
