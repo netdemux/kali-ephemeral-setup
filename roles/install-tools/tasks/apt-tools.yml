@@ -8,6 +8,7 @@
       - seclists
       - rlwrap
       - ligolo-ng
+      - feroxbuster
     state: latest
   become: true
   become_method: sudo
