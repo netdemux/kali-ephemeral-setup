@@ -1,5 +1,6 @@
 ---
 - include_tasks: apt-tools.yml
 - include_tasks: nmapAutomator.yml
+- include_tasks: parsingpeas.yml
 - include_tasks: scripts.yml
 

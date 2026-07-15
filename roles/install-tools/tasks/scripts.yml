@@ -13,23 +13,22 @@
   block:
     - name: "Create ref directory if it does not exist"
       file:
-        path: "{{ ansible_env.HOME }}/ref"
+        path: "{{ ansible_facts['env']['HOME'] }}/ref"
         state: directory
         mode: '0755'
 
     - name: "Copy reference files"
-      file:
-        src: "{{ item }}"
-        dest: "{{ ansible_env.HOME }}/ref/{{ item }}"
-        mode: '0644'
+      ansible.builtin.copy:
+        src: "files/{{ item }}"
+        dest: "{{ ansible_facts['env']['HOME'] }}/ref/{{ item }}"
       loop:
         - "adref.txt"
         - "breachref.txt"
-        - "bloodref"
-        - "venomref"
-        - "dllref"
-        - "commonref"
-        - "breakoutref"
+        - "bloodref.txt"
+        - "venomref.txt"
+        - "dllref.txt"
+        - "commonref.txt"
+        - "breakoutref.txt"
 
     - name: "Configure user-specific bash aliases"
       ansible.builtin.blockinfile:
