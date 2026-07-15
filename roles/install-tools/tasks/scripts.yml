@@ -37,11 +37,11 @@
         create: yes
         mode: '0644'
         block: |
-          alias adref='cat $HOME/ref/adref.txt'
-          alias breachref='cat $HOME/ref/breachref.txt'
-          alias bloodref='cat $HOME/ref/bloodref.txt'
-          alias venomref='cat $HOME/ref/venomref.txt'
-          alias dllref='cat $HOME/ref/dllref.txt'
-          alias commonref='cat $HOME/ref/commonref.txt'
-          alias breakoutref='cat $HOME/ref/breakoutref.txt'
+          alias adref='cat {{ ansible_facts['env']['HOME'] }}/ref/adref.txt'
+          alias breachref='cat {{ ansible_facts['env']['HOME'] }}/ref/breachref.txt'
+          alias bloodref='cat {{ ansible_facts['env']['HOME'] }}/ref/bloodref.txt'
+          alias venomref='cat {{ ansible_facts['env']['HOME'] }}/ref/venomref.txt'
+          alias dllref='cat {{ ansible_facts['env']['HOME'] }}/ref/dllref.txt'
+          alias commonref='cat {{ ansible_facts['env']['HOME'] }}/ref/commonref.txt'
+          alias breakoutref='cat {{ ansible_facts['env']['HOME'] }}/ref/breakoutref.txt'
           alias ll='ls -la'
