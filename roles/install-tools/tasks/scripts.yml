@@ -9,3 +9,40 @@
   become: true
   become_method: sudo
 
+- name: "Install references"
+  block:
+    - name: "Create ref directory if it does not exist"
+      file:
+        path: "{{ ansible_env.HOME }}/ref"
+        state: directory
+        mode: '0755'
+
+    - name: "Copy reference files"
+      file:
+        src: "{{ item }}"
+        dest: "{{ ansible_env.HOME }}/ref/{{ item }}"
+        mode: '0644'
+      loop:
+        - "adref.txt"
+        - "breachref.txt"
+        - "bloodref"
+        - "venomref"
+        - "dllref"
+        - "commonref"
+        - "breakoutref"
+
+    - name: "Configure user-specific bash aliases"
+      ansible.builtin.blockinfile:
+        path: "~/.bashrc"
+        marker: "# {mark} ANSIBLE MANAGED ALIASES"
+        create: yes
+        mode: '0644'
+        block: |
+          alias adref='cat $HOME/ref/adref.txt'
+          alias breachref='cat $HOME/ref/breachref.txt'
+          alias bloodref='cat $HOME/ref/bloodref.txt'
+          alias venomref='cat $HOME/ref/venomref.txt'
+          alias dllref='cat $HOME/ref/dllref.txt'
+          alias commonref='cat $HOME/ref/commonref.txt'
+          alias breakoutref='cat $HOME/ref/breakoutref.txt'
+          alias ll='ls -la'

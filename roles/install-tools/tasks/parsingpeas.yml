@@ -1,0 +1,52 @@
+---
+- name: "Install ParsingPeas"
+  block:
+    - name: "Clone ParsingPeas"
+      ansible.builtin.git:
+        repo: "https://github.com/YuvalMil/ParsingPeas"
+        dest: "/opt/ParsingPeas"
+        version: "main"
+
+    - name: "Ensure setup.sh is executable"
+      ansible.builtin.file:
+        path: "/opt/ParsingPeas/setup.sh"
+        mode: "0755"
+
+    - name: "Run ParsingPeas setup script to download PEASS binaries"
+      ansible.builtin.command:
+        cmd: "./setup.sh"
+        chdir: "/opt/ParsingPeas"
+        creates: "/opt/ParsingPeas/scripts/linpeas.sh"
+
+    - name: "Install system dependencies"
+      ansible.builtin.apt:
+        name:
+          - python3-pip
+          - python3-venv
+        state: present
+        update_cache: no
+
+    - name: "Install Python dependencies in a virtual environment"
+      ansible.builtin.pip:
+        requirements: "/opt/ParsingPeas/requirements.txt"
+        virtualenv: "/opt/ParsingPeas/venv"
+        virtualenv_command: "python3 -m venv"
+
+    - name: "Create a global launcher script for ParsingPeas receiver"
+      ansible.builtin.copy:
+        dest: "/usr/local/bin/listenpeas"
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          cd /opt/ParsingPeas && /opt/ParsingPeas/venv/bin/python3 /opt/ParsingPeas/receiver.py "$@"
+
+    - name: "Create a global launcher script for ParsingPeas parser"
+      ansible.builtin.copy:
+        dest: "/usr/local/bin/parsepeas"
+        mode: "0755"
+        content: |
+          #!/bin/bash
+          cd /opt/ParsingPeas && /opt/ParsingPeas/venv/bin/python3 /opt/ParsingPeas/parser.py "$@"
+
+  become: true
+  become_method: sudo

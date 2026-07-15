@@ -15,8 +15,16 @@ else
     exit 1
 fi
 
+mkdir "$PROJECT_NAME/loot"
+mkdir "$PROJECT_NAME/vulns"
 touch "$PROJECT_NAME/users.txt"
 touch "$PROJECT_NAME/passwords.txt"
 touch "$PROJECT_NAME/creds.txt"
+touch "$PROJECT_NAME/test.txt"
+echo "Hello World" > "$PROJECT_NAME/test.txt"
 
-tmux new-session -s "$PROJECT_NAME" -c "$(pwd)/$PROJECT_NAME"
+if [ -n "$TMUX" ]; then
+    exit 1
+else
+    tmux new-session -s "$PROJECT_NAME" -c "$(pwd)/$PROJECT_NAME"
+fi

